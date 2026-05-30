@@ -1,0 +1,695 @@
+നിങ്ങൾ നൽകിയ കോഡിൽ ചെറിയൊരു ടൈപ്പിംഗ് മിസ്റ്റേക്ക് (Syntax Error) വന്നതുകൊണ്ടാണ് പേജ് പൂർണ്ണമായും ബ്ലാങ്ക് (No display) ആയി കാണിക്കുന്നത്.
+
+ജാവാസ്ക്രിപ്റ്റിലെ `pick` ഫങ്ക്ഷന്റെ ഉള്ളിൽ HTML കോഡ് എഴുതിയപ്പോൾ ബാക്ക്ടിക്സിന് (` ` `) പകരം ഇരട്ട ബാക്ക്ടിക്സ് (`` ` ` ``) വീണുപോയതാണ് പ്രശ്നം.
+
+കോഡ് ശരിയായി പ്രവർത്തിക്കാൻ താഴെ നൽകിയിരിക്കുന്ന കോഡ് പൂർണ്ണമായി കോപ്പി ചെയ്ത് നിങ്ങളുടെ `index.html` ഫയലിലേക്ക് പേസ്റ്റ് ചെയ്യുക:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GURU PLUS K-TET Practice Test - Psychology</title>
+  <style>
+  /* Base Reset & Mobile-First Variables */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --primary-color: #1B7A4A;
+    --primary-light: #E6F7EF;
+    --primary-dark: #145C37;
+    --accent-color: #5DDBA3;
+    --success-color: #1D9E75;
+    --success-bg: #EAF3DE;
+    --error-color: #E24B4A;
+    --error-bg: #FCEBEB;
+    --text-main: #2D3748;
+    --text-muted: #718096;
+    --border-color: #E2E8F0;
+  }
+
+  body {
+    background: linear-gradient(135deg, #0F2027 0%, #203A43 40%, #2C5364 100%);
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #app {
+    padding: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Sticky Header/Top Bar Card */
+  .top-bar {
+    background: var(--primary-color);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+  }
+
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .quiz-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #A8DFC4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 65%;
+  }
+
+  .q-badge {
+    background: #25A865;
+    color: #E6F7EF;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .timer-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-dark);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+
+  .timer-label {
+    font-size: 10px;
+    color: #A8DFC4;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .timer-txt {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timer-txt.red {
+    color: #F09595;
+    animation: pulse 1s infinite alternate;
+  }
+
+  @keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+  }
+
+  /* Question Card Wrapper */
+  .q-container {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+
+  .q-num {
+    font-size: 11px;
+    color: var(--primary-color);
+    font-weight: 600;
+    background: var(--primary-light);
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.5;
+    margin-top: 8px;
+    margin-bottom: 14px;
+  }
+
+  /* Options Layout */
+  .opts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    background: #fff;
+    transition: all 0.15s ease;
+    min-height: 48px;
+  }
+
+  .opt-key {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .opt-key.A { background: #E6F1FB; color: #0C447C; }
+  .opt-key.B { background: #FAEEDA; color: #633806; }
+  .opt-key.C { background: #FBEAF0; color: #72243E; }
+  .opt-key.D { background: #EAF3DE; color: #27500A; }
+
+  .opt-txt {
+    font-size: 13.5px;
+    color: var(--text-main);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* Selection States */
+  .opt.unanswered:active {
+    background: var(--primary-light);
+    border-color: #6FD4A8;
+  }
+
+  .opt.correct-ans {
+    border-color: var(--success-color);
+    background: var(--success-bg);
+    pointer-events: none;
+  }
+  .opt.correct-ans .opt-key {
+    background: var(--success-color);
+    color: #fff;
+  }
+  .opt.correct-ans .opt-txt {
+    color: #085041;
+    font-weight: 600;
+  }
+
+  .opt.wrong-ans {
+    border-color: var(--error-color);
+    background: var(--error-bg);
+    pointer-events: none;
+  }
+  .opt.wrong-ans .opt-key {
+    background: var(--error-color);
+    color: #fff;
+  }
+  .opt.wrong-ans .opt-txt {
+    color: #791F1F;
+  }
+
+  .opt.neutral-locked {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* Explanations block */
+  .exp-box {
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: inset 2px 0 0px rgba(0,0,0,0.1);
+  }
+
+  .exp-box.correct {
+    background: var(--success-bg);
+    border: 1px solid #5DCAA5;
+    color: #085041;
+  }
+
+  .exp-box.wrong {
+    background: var(--error-bg);
+    border: 1px solid #F09595;
+    color: #791F1F;
+  }
+
+  .exp-label {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  /* Bottom Submit Button Container */
+  .action-container {
+    margin-top: 8px;
+    margin-bottom: 24px;
+  }
+
+  .btn-submit-all {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #1D9E75;
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+  }
+
+  .btn-submit-all:active {
+    transform: scale(0.99);
+  }
+
+  /* Result Dashboards */
+  .result-top {
+    background: var(--primary-color);
+    border-radius: 12px;
+    padding: 24px 14px;
+    text-align: center;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .score-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 4px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+  }
+
+  .score-big {
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .score-sub {
+    font-size: 12px;
+    color: #A8DFC4;
+    margin-top: 2px;
+  }
+
+  .result-label {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .result-sub {
+    font-size: 13px;
+    color: #A8DFC4;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .stat-c {
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+
+  .stat-c.green { background: var(--success-bg); }
+  .stat-c.red { background: var(--error-bg); }
+  .stat-c.gray { background: #EDF2F7; }
+
+  .stat-n {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .stat-c.green .stat-n { color: var(--success-color); }
+  .stat-c.red .stat-n { color: var(--error-color); }
+  .stat-c.gray .stat-n { color: var(--text-main); }
+
+  .stat-l {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* Review Cards Section */
+  .review-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 16px 0 8px;
+    padding-left: 2px;
+  }
+
+  .r-card {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 14px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+
+  .r-card.rc { border-left: 4px solid var(--success-color); }
+  .r-card.rw { border-left: 4px solid var(--error-color); }
+  .r-card.rs { border-left: 4px solid var(--text-muted); }
+
+  .r-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .r-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .r-badge.rc { background: var(--success-bg); color: #27500A; }
+  .r-badge.rw { background: var(--error-bg); color: #791F1F; }
+  .r-badge.rs { background: #EDF2F7; color: var(--text-muted); }
+
+  .r-qnum {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .r-qtxt {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.45;
+    margin-bottom: 8px;
+  }
+
+  .r-ans {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .r-ans.correct { background: var(--success-bg); color: #085041; }
+  .r-ans.wrong { background: var(--error-bg); color: #791F1F; }
+
+  .r-exp {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+
+  .restart-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  @media(max-width: 350px) {
+    .quiz-title { font-size: 11px; }
+    .timer-txt { font-size: 14px; }
+    .opt-txt { font-size: 12.5px; }
+  }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div id="view"></div>
+</div>
+
+<script>
+const sndCorrect = new Audio("https://actions.google.com/sounds/v1/cartoon/clapping_and_cheering_short.ogg");
+
+const Q=[
+  {q:"Biological model of intellectual development is associated with:",o:["Piaget","Bruner","Sheldon","Cattell"],a:0,e:"ജീൻ പിയാഷെയുടെ (Jean Piaget) വികാസ സിദ്ധാന്തം ജൈവികമായ ആശയങ്ങളിൽ അധിഷ്ഠിതമാണ്. ചുറ്റുപാടുകളുമായി പൊരുത്തപ്പെടാനുള്ള മനുഷ്യന്റെ ജൈവിക ശേഷിയുടെ തുടർച്ചയായാണ് അദ്ദേഹം ബുദ്ധിവികാസത്തെ കാണുന്നത്."},
+  {q:"Suitable combinations related to ICT:\n(a) Formative assessment\n(b) Hinders teacher-student relationship\n(c) Destroys creativity\n(d) Real-time interaction\n(e) Immediate feedback",o:["a, b, e","a, b, d","a, d, e","b, d, e"],a:2,e:"ഐ.സി.ടി (ICT) പഠനത്തെ മെച്ചപ്പെടുത്തുന്നത് ഫോർമേറ്റീവ് അസ്സെസ്മെന്റ് വഴിയും, പെട്ടെന്നുള്ള ഫീഡ്‌ബാക്ക് നൽകിക്കൊണ്ടും, തത്സമയ ആശയവിനിമയം (Real-time interaction) സാധ്യമാക്കിക്കൊണ്ടുമാണ്."},
+  {q:"Industry vs Inferiority stage focuses on:",o:["Responsibility","Identity","Intimacy","Competence and skill mastery"],a:3,e:"എറിക് എറിക്സന്റെ സിദ്ധാന്തപ്രകാരം, ഇൻഡസ്ട്രി വേഴ്സസ് ഇൻഫീരിയോറിറ്റി ഘട്ടത്തിൽ (കുട്ടിക്കാലം) കുട്ടികൾ പുതിയ അക്കാദമിക-സാമൂഹിക കഴിവുകൾ മാസ്റ്റർ ചെയ്യുന്നതിലൂടെ തങ്ങളുടെ കാര്യപ്രാപ്തിയും നൈപുണ്യവും (Competence) വർദ്ധിപ്പിക്കാൻ ശ്രദ്ധ കേന്ദ്രീകരിക്കുന്നു."},
+  {q:"Adolescence as a period of storm and stress indicates:",o:["Emotional detachment","Cognitive development","Challenges and turmoil","Emotional development"],a:2,e:"GM. സ്റ്റാൻലി ഹാൾ ആണ് കൗമാരപ്രായത്തെ 'തീവ്രമായ സമ്മർദ്ദത്തിന്റെയും കൊടുങ്കാറ്റിന്റെയും കാലഘട്ടം' (Storm and Stress) എന്ന് വിശേഷിപ്പിച്ചു. ഇത് കൗമാരത്തിലെ വൈകാരികമായ അസ്വസ്ഥതകളെയും വെല്ലുവിളികളെയും സൂചിപ്പിക്കുന്നു."},
+  {q:"Teacher leader can enhance school culture by:",o:["Competition","Ignoring teaching impact","Isolating low achievers","Modelling positive behaviour"],a:3,e:"അധ്യാപകർ മാതൃകാപരമായ പെരുമാറ്റങ്ങളും പ്രൊഫഷണൽ മൂല്യങ്ങളും ക്ലാസ്സ്മുറിയിൽ കാണിച്ചു കൊടുക്കുന്നതിലൂടെ സ്കൂൾ സംസ്കാരത്തെ നല്ല രീതിയിൽ സ്വാധീനിക്കാൻ സാധിക്കും."},
+  {q:"Conditioned response gradually disappears:",o:["Type I Conditioning","Type II Conditioning","Extinction","Generalization"],a:2,e:"ബിഹേവിയറൽ സൈക്കോളജിയിൽ, നിബന്ധിത ഉത്തേജകത്തോടൊപ്പം സ്വാഭാവിക ഉത്തേജകം നൽകാതിരിക്കുമ്പോൾ നിബന്ധിത പ്രതികരണം പതുക്കെ ഇല്ലാതാകുന്നതിനെ 'ഇല്ലാതാകൽ' അല്ലെങ്കിൽ എക്സ്റ്റിങ്ഷൻ (Extinction) എന്ന് വിളിക്കുന്നു."},
+  {q:"Kohlberg believed moral development is influenced by:",o:["Genetics only","Environment only","Culture and environment","Environment and genetics"],a:2,e:"ലോറൻസ് കോൾബർഗിന്റെ അഭിപ്രായത്തിൽ, കുട്ടികളിലെ ധാർമ്മിക വികാസം (Moral development) അവരുടെ സാംസ്കാരികവും സാമൂഹികവുമായ ചുറ്റുപാടുകളുമായുള്ള ഇടപെടലുകളിലൂടെയാണ് രൂപപ്പെടുന്നത്."},
+  {q:"Heightened sensitivity to social evaluation:",o:["Peer pressure","Person perception","Social conformity","Imaginary audience"],a:3,e:"മറ്റുള്ളവരെല്ലാം തന്നെത്തന്നെയാണ് നോക്കിക്കൊണ്ടിരിക്കുന്നത് എന്ന കൗമാരക്കാരുടെ തെറ്റായ ചിന്താഗതിയെയാണ് 'ഇമേജിനറി ഓഡിയൻസ്' (Imaginary audience) എന്ന് വിളിക്കുന്നത്."},
+  {q:"Reservation for persons with disabilities in educational institutions:",o:["3%","5%","7%","10%"],a:1,e:"RPwD ആക്റ്റ് 2016 (Rights of Persons with Disabilities Act) പ്രകാരം സർക്കാർ/എയ്ഡഡ് ഉന്നത വിദ്യാഭ്യാസ സ്ഥാപനങ്ങളിൽ ഭിന്നശേഷിക്കാരായ വിദ്യാർത്ഥികൾക്ക് 5% സംവരണം ഉറപ്പാക്കുന്നുണ്ട്."},
+  {q:"Reflective practitioner means:",o:["Self-evaluation and improvement","Caring teacher","Evaluates students","Evaluates teachers"],a:0,e:"ഒരു റിഫ്ലക്റ്റീവ് പ്രാക്ടീഷണർ (Reflective practitioner) എന്നത് കൊണ്ട് അർത്ഥമാക്കുന്നത് തന്റെ ബോധന രീതികളെ സ്വയം വിലയിരുത്തുകയും അതിലൂടെ അധ്യാപനം കൂടുതൽ മെച്ചപ്പെടുത്തുകയും ചെയ്യുന്ന അധ്യാപകനെയാണ്."},
+  {q:"Unlawful behaviour by minors:",o:["Youth misconduct","Adolescent transgressions","Youth abuse","Juvenile delinquency"],a:3,e:"നിയമപരമായി പ്രായപൂർത്തിയാകാത്ത കുട്ടികൾ ചെയ്യുന്ന നിയമവിരുദ്ധമായ കുറ്റകൃത്യങ്ങളെ 'ജുവനൈൽ ഡിലിൻക്വൻസി' (Juvenile delinquency) എന്ന് വിളിക്കുന്നു."},
+  {q:"Bruner's term for transforming information:",o:["Scaffolding","Discovery learning","Encoding","Spiraling"],a:2,e:"വിവരങ്ങളെ തലച്ചോറിന് മനസ്സിലാക്കാൻ പാകത്തിലുള്ള മാനസിക രൂപങ്ങളിലേക്ക് മാറ്റുന്ന പ്രക്രിയയെ ജെറോം ബ്രൂണർ 'എൻകോഡിങ്' (Encoding) എന്ന് വിശേഷിപ്പിച്ചു."},
+  {q:"Ethical responsibility in assessment:",o:["Subjective grading","Fair and objective assessment","Ignore individual needs","Academic achievement only"],a:1,e:"വിദ്യാർത്ഥികളെ വിലയിരുത്തുമ്പോൾ (Assessment) പുലർത്തേണ്ട പ്രധാന ധാർമ്മിക ഉത്തരവാദിത്തം എന്നത് അത് പൂർണ്ണമായും നിഷ്പക്ഷവും നീതിയുക്തവും (Fair and objective) ആയിരിക്കണം എന്നതാണ്."},
+  {q:"New learning affects old learning recall:",o:["Retroactive interference","Proactive interference","Regression","Amnesia"],a:0,e:"പുതിയതായി പഠിക്കുന്ന കാര്യങ്ങൾ പഴയ കാര്യങ്ങൾ ഓർത്തെടുക്കുന്നതിന് തടസ്സമാകുന്ന പ്രതിഭാസത്തെ 'റെട്രോആക്ടീവ് ഇന്റർഫെറൻസ്' (Retroactive interference) എന്ന് വിളിക്കുന്നു."},
+  {q:"Exploring roles to develop identity:",o:["Identity Moratorium","Identity Diffusion","Identity Foreclosure","Identity Crisis"],a:0,e:"ജെയിംസ് മാർഷിയയുടെ അഭിപ്രായത്തിൽ, കൗമാരക്കാർ ഒരു പ്രത്യേക ഐഡന്റിറ്റി തിരഞ്ഞെടുക്കുന്നതിന് മുൻപ് വ്യത്യസ്തമായ റോളുകൾ പരീക്ഷിച്ച് നോക്കുന്ന അവസ്ഥയെ 'ഐഡന്റിറ്റി മൊറട്ടോറിയം' എന്ന് വിളിക്കുന്നു."},
+  {q:"Factors increasing substance abuse vulnerability:\n(a) Academic excellence\n(b) Peer pressure\n(c) Low self-esteem\n(d) Strong parental binding\n(e) Family history of abuse",o:["b, c, e","a, b, d","a, b, c, e","b, d, e"],a:0,e:"ലഹരി ഉപയോഗത്തിലേക്ക് കുട്ടികളെ നയിക്കുന്ന പ്രധാന ഘടകങ്ങൾ കൂട്ടുകാരുടെ സമ്മർദ്ദം (Peer pressure), കുറഞ്ഞ ആത്മവിശ്വാസം, കുടുംബ പശ്ചാത്തലം എന്നിവയാണ്."},
+  {q:"Correct statements regarding motivation:\n(a) Intrinsic motivation is short-lived\n(b) Extrinsic motivation is always negative\n(c) Intrinsic motivation promotes deep learning\n(d) Extrinsic motivation uses external rewards\n(e) Motivation sustains goal-directed behavior",o:["b, c, d, e","a, c, e","c, d, e","c, e"],a:2,e:"ആന്തരിക ചോദന (Intrinsic motivation) ആഴത്തിലുള്ള പഠനത്തെ സഹായിക്കുന്നു, ബാഹ്യ ചോദന സമ്മാനങ്ങളെ അടിസ്ഥാനമാക്കിയുള്ളതാണ്, കൂടാതെ ചോദന ലക്ഷ്യബോധത്തോടെയുള്ള പെരുമാറ്റത്തെ നിലനിർത്തുന്നു."},
+  {q:"ZPD suggests learning is most effective when:",o:["At learner's current level","Too easy","Too difficult","Totally unfamiliar"],a:0,e:"വൈഗോട്സ്കിയുടെ ZPD (Zone of Proximal Development) പ്രകാരം, ഒരു കുട്ടിയുടെ നിലവിലുള്ള അറിവിന് തൊട്ടു മുകളിലുള്ളതും എന്നാൽ മറ്റൊരാളുടെ സഹായത്തോടെ ചെയ്യാൻ കഴിയുന്നതുമായ കാര്യങ്ങൾ നൽകുമ്പോഴാണ് പഠനം ഏറ്റവും ഫലപ്രദമാകുന്നത്."},
+  {q:"Purpose of defence mechanisms:",o:["Emotional expression","Reduce anxiety","Escape reality","Distress others"],a:1,e:"സിഗ്മണ്ട് ഫ്രോയിഡിന്റെ അഭിപ്രായത്തിൽ, ഈഗോ ഡിഫൻസ് മെക്കാനിസങ്ങൾ (ആത്മരക്ഷാ തന്ത്രങ്ങൾ) അബോധമനസ്സിൽ പ്രവർത്തിച്ച് വ്യക്തിയുടെ മാനസിക ഉത്കണ്ഠയും (Anxiety) സങ്കടവും കുറയ്ക്കാൻ സഹായിക്കുന്നു."},
+  {q:"Gestalt closure:",o:["Common movement","Common background","Fill missing parts","Similarity"],a:2,e:"ഗെസ്റ്റാൾട്ട് മനഃശാസ്ത്രത്തിലെ 'ക്ലോഷർ' (Closure) നിയമപ്രകാരം, പൂർണ്ണമല്ലാത്ത അല്ലെങ്കിൽ വിട്ടുപോയ ഭാഗങ്ങളുള്ള ഒരു ചിത്രത്തെ/ആശയത്തെ മനുഷ്യ മനസ്സ് സ്വയം പൂരിപ്പിച്ച് പൂർണ്ണരൂപത്തിൽ കാണാൻ ശ്രമിക്കുന്നു."},
+  {q:"Guilford's creativity components:",o:["Analysis-Synthesis-Evaluation","Preparation-Incubation-Illumination","Fluency-Flexibility-Originality","Intelligence-Convergent thinking"],a:2,e:"ജെ.പി. ഗിൽഫോർഡ് വിഭാവനം ചെയ്ത സർഗ്ഗാത്മകതയുടെ പ്രധാന ഘടകങ്ങൾ Fluency (ആശയങ്ങളുടെ എണ്ണം), Flexibility (വൈവിധ്യം), Originality (മൗലികത) എന്നിവയാണ്."},
+  {q:"Modifying existing knowledge structure:",o:["Assimilation","Accommodation","Equilibration","Schema"],a:1,e:"പിയാഷെയുടെ സിദ്ധാന്തപ്രകാരം പുതിയ അനുഭവങ്ങൾക്കനുസരിച്ച് നിലവിലുള്ള വിജ്ഞാന ഘടനയെ (Schema) മാറ്റിയെഴുതുന്ന പ്രക്രിയയെ 'അക്കൊമഡേഷൻ' (Accommodation) എന്ന് വിളിക്കുന്നു."},
+  {q:"Positive teacher-student relationship:\n(a) Dictatorial control\n(b) Mutual respect and trust\n(c) Favoritism\n(d) Clear and empathetic communication\n(e) Discouraging student input",o:["a, b, d","b, d","b, d, e","b, c, d"],a:1,e:"നല്ലൊരു അധ്യാപക-വിദ്യാർത്ഥി ബന്ധം വളർത്തിയെടുക്കാൻ പരസ്പര ബഹുമാനവും വിശ്വാസവും, ഒപ്പം സഹാനുഭൂതിയോടെയുള്ള ആശയവിനിമയവും അത്യാവശ്യമാണ്."},
+  {q:"Skill development and employment opportunities for PwDs:",o:["NIT","NIEPID","NASDD","NSDC"],a:1,e:"NIEPID (National Institute for the Empowerment of Persons with Intellectual Disabilities) ഭിന്നശേഷിക്കാരായ വ്യക്തികൾക്ക് തൊഴിൽ നൈപുണ്യവും സ്വയംപര്യാപ്തതയും നൽകാൻ പ്രവർത്തിക്കുന്ന സ്ഥാപനമാണ്."},
+  {q:"Emotional processing region in adolescence:",o:["Hippocampus","Cerebellum","Amygdala","Frontal Cortex"],a:2,e:"കൗമാരപ്രായത്തിൽ വികാരങ്ങളെ നിയന്ത്രിക്കുന്നത് തലച്ചോറിലെ 'അമിഗ്ദാല' (Amygdala) എന്ന ഭാഗമാണ്. കാരണം, ആസൂത്രണം നിർവ്വഹിക്കുന്ന പ്രീഫ്രോണ്ടൽ കോർട്ടെക്സ് ഈ പ്രായത്തിൽ വികസിച്ചുവരുന്നതേയുള്ളൂ."},
+  {q:"Ausubel's concept:",o:["Subsumption","Adaptation","Expository learning","Superordinate learning"],a:0,e:"ഡേവിഡ് ഔസുബെലിന്റെ സിദ്ധാന്തപ്രകാരം, പുതിയ അറിവുകളെ നിലവിലുള്ള വലിയ ആശയങ്ങളിലേക്ക് കൂട്ടിച്ചേർക്കുന്ന പ്രക്രിയയാണ് സബ്സംപ്ഷൻ (Subsumption)."},
+  {q:"Learning disability means:",o:["Permanent intellectual condition","Neurological condition affecting academics","Temporary intellectual condition","Physiological condition"],a:1,e:"പഠന വൈകല്യം (ഉദാഹരണത്തിന് Dyslexia) എന്നത് ബുദ്ധിമാന്ദ്യമല്ല, മറിച്ച് എഴുത്ത്, വായന, ഗണിതം എന്നിവയെ ബാധിക്കുന്ന ഒരു നാഡീവ്യൂഹ സംബന്ധമായ (Neurological) അവസ്ഥയാണ്."},
+  {q:"Freud: unresolved conflicts lead to:",o:["Fixation","Emotional stability","Mental maturity","Projection"],a:0,e:"ഫ്രോയിഡിന്റെ അഭിപ്രായത്തിൽ, മനോലൈംഗിക വികാസ ഘട്ടങ്ങളിലെ (Psychosexual stages) പരിഹരിക്കപ്പെടാത്ത പ്രശ്നങ്ങൾ ഭാവിയിൽ വ്യക്തിത്വ വികാസത്തെ തടസ്സപ്പെടുത്തുന്ന 'ഫിക്സേഷൻ' (Fixation) എന്ന അവസ്ഥയ്ക്ക് കാരണമാകുന്നു."},
+  {q:"Goal in supporting intellectual disabilities:",o:["Academic achievement only","Segregation","Reduce adaptive skills","Social-emotional well-being"],a:3,e:"ബൗദ്ധിക വൈകല്യമുള്ള കുട്ടികളെ പഠിപ്പിക്കുമ്പോൾ അവരുടെ കേവലം അക്കാദമിക വിജയത്തേക്കാൾ പ്രാധാന്യം നൽകേണ്ടത് അവരുടെ സാമൂഹിക-വൈകാരിക ക്ഷേമത്തിനും (Social-emotional well-being) ജീവിത നൈപുണ്യങ്ങൾക്കുമാണ്."},
+  {q:"Purpose of formative assessment:",o:["Final grades","Comparison","Identify improvement areas","Ranking"],a:2,e:"ഫോർമേറ്റീവ് അസ്സെസ്മെന്റിന്റെ പ്രധാന ലക്ഷ്യം റാങ്ക് നൽകലോ ഗ്രേഡിങ്ങോ അല്ല, മറിച്ച് പഠനത്തിനിടയിൽ കുട്ടികളുടെ പോരായ്മകൾ കണ്ടെത്തി അവ തിരുത്താൻ സഹായിക്കുക എന്നതാണ്."},
+  {q:"Managing stress and challenges:",o:["Projection","Regression","Coping mechanism","Avoidance"],a:2,e:"മാനസിക സമ്മർദ്ദങ്ങളെയും ജീവിത പ്രതിസന്ധികളെയും അതിജീവിക്കാൻ വ്യക്തികൾ സ്വീകരിക്കുന്ന ബോധപൂർവ്വമായ തന്ത്രങ്ങളെ 'കോപ്പിങ് മെക്കാനിസം' (Coping mechanism) എന്ന് വിളിക്കുന്നു."},
+  {q:"Spiral curriculum:",o:["Action representation","Repetition only","Increasing complexity","Complex to simple"],a:2,e:"ജെറോം ബ്രൂണറുടെ സ്പൈറൽ കരിക്കുലം (Spiral curriculum) അനുസരിച്ച് അടിസ്ഥാന ആശയങ്ങൾ കുട്ടികളുടെ പ്രായത്തിനനുസരിച്ച് ഘട്ടം ഘട്ടമായി കൂടുതൽ ആഴത്തിലും കാഠിന്യത്തിലും (Increasing complexity) അവതരിപ്പിക്കുന്നു."},
+  {q:"Focus areas in KCF 2023:",o:["22","24","26","28"],a:2,e:"കേരള കരിക്കുലം ഫ്രെയിംവർക്ക് (KCF) 2023-ൽ സ്കൂൾ വിദ്യാഭ്യാസ പരിഷ്കരണത്തിനായി 26 പ്രധാന ഫോക്കസ് ഏരിയകളാണ് (Focus areas) ഉൾപ്പെടുത്തിയിട്ടുള്ളത്."},
+  {q:"Focus of IEP:",o:["Showcase achievement","Personalized goals and services","Cultural awareness","Separate classes"],a:1,e:"IEP (Individualized Education Program) എന്നത് ഭിന്നശേഷിയുള്ള ഓരോ കുട്ടിയുടെയും പ്രത്യേക ആവശ്യങ്ങൾക്കനുസരിച്ച് വ്യക്തിഗതമായി തയ്യാറാക്കുന്ന പഠന പദ്ധതിയാണ്."},
+  {q:"Additional opportunities for gifted children:",o:["Inclusion","Compensation","Enrichment","Mainstreaming"],a:2,e:"പ്രതിഭധനരായ (Gifted) കുട്ടികൾക്ക് ക്ലാസ്സ് മാറ്റാതെ തന്നെ അവരുടെ കഴിവിനനുസരിച്ച് കൂടുതൽ ആഴത്തിലുള്ള പഠനാവസരങ്ങൾ നൽകുന്ന രീതിയാണ് എൻറിച്ച്മെന്റ് (Enrichment)."},
+  {q:"Legal concept for juvenile offenders:",o:["Juvenile privilege","IPC","CrPC","Parens patriae"],a:3,e:"'പാരൻസ് പേട്രിയേ' (Parens patriae) എന്ന നിയമ തത്വം വഴി കുറ്റകൃത്യങ്ങളിൽ ഏർപ്പെടുന്ന കുട്ടികളെ ശിക്ഷിക്കുന്നതിനേക്കാൾ അവരുടെ സംരക്ഷണത്തിനും പുനരധിവാസത്തിനും രാജ്യം മുൻഗണന നൽകുന്നു."},
+  {q:"Managing adolescent independence:",o:["Open communication","Ignore behaviour","Minimize peer interaction","Discourage autonomy"],a:0,e:"കൗമാരക്കാരുടെ സ്വാതന്ത്ര്യേച്ഛയെ ശരിയായ രീതിയിൽ കൈകാര്യം ചെയ്യാൻ അധ്യാപകരും രക്ഷിതാക്കളും അവരുമായി തുറന്ന ആശയവിനിമയം (Open communication) നടത്തേണ്ടതുണ്ട്."},
+  {q:"Aids and appliances for PwDs:",o:["Adaptive technology","Assistive technology","Accommodative technology","Anchoring technology"],a:1,e:"ഭിന്നശേഷിക്കാരായ കുട്ടികളുടെ പഠനവും ദൈനംദിന കാര്യങ്ങളും എളുപ്പമാക്കാൻ സഹായിക്കുന്ന പ്രത്യേക ഉപകരണങ്ങളെയും സോഫ്റ്റ്‌വെയറുകളെയും 'അസിസ്റ്റീവ് ടെക്നോളജി' (Assistive technology) എന്ന് വിളിക്കുന്നു."},
+  {q:"Intelligence for finding directions:",o:["Intrapersonal","Visual-Spatial","Naturalistic","Kinesthetic"],a:1,e:"ഹോവാർഡ് ഗാർഡ്നറുടെ സിദ്ധാന്തപ്രകാരം, വഴികളും ദിശകളും കൃത്യമായി മനസ്സിലാക്കാനും ദൃശ്യങ്ങൾ മനസ്സിൽ വിഭാവനം ചെയ്യാനുമുള്ള കഴിവിനെ 'വിഷ്വൽ-സ്പേഷ്യൽ ഇന്റലിജൻസ്' എന്ന് വിളിക്കുന്നു."},
+  {q:"Major achievement of Sensorimotor Stage:",o:["Object permanence","Reversibility","Animism","Seriation"],a:0,e:"പിയാഷെയുടെ സെൻസറിമോട്ടോർ ഘട്ടത്തിലെ (0-2 വയസ്സ്) ഏറ്റവും പ്രധാനപ്പെട്ട നേട്ടമാണ് 'ഒബ്ജക്റ്റ് പെർമനൻസ്' (വസ്തുസ്ഥിരത)—അതായത് കൺമുന്നിൽ നിന്നും മാറിയാലും വസ്തുക്കൾ നിലനിൽക്കുന്നുണ്ടെന്ന ബോധം."}
+];
+
+const KEYS=['A','B','C','D'];
+let ans=new Array(Q.length).fill(-1);
+let done=new Array(Q.length).fill(false);
+
+let globalTimeLeft = 1800; 
+let globalTmr = null;
+
+function startGlobalTimer(){
+  if(globalTmr) return; 
+  updTimerDisplay();
+  globalTmr = setInterval(()=>{
+    globalTimeLeft--;
+    updTimerDisplay();
+    if(globalTimeLeft <= 0){
+      clearInterval(globalTmr);
+      globalTmr = null;
+      showResults();
+    }
+  }, 1000);
+}
+
+function updTimerDisplay(){
+  const el = document.getElementById('tmr');
+  if(!el) return;
+  const mins = Math.floor(globalTimeLeft / 60);
+  const secs = globalTimeLeft % 60;
+  el.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+  if(globalTimeLeft <= 120){
+    el.className = 'timer-txt red';
+  } else {
+    el.className = 'timer-txt';
+  }
+}
+
+function renderAllQuestions(){
+  let html = `
+  <div class="top-bar">
+    <div class="top-row" style="gap: 10px; margin-bottom: 8px; justify-content: flex-start;">
+      <img src="myphoto.jpeg" alt="GURU PLUS" style="width: 35px; height: 35px; border-radius: 6px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
+      <span class="quiz-title" style="font-size: 13.5px; white-space: normal; max-width: 100%; line-height: 1.3; font-weight: 700; color: #fff;">GURU PLUS K-TET PSYCHOLOGY PRACTICE SERIES</span>
+    </div>
+    <div class="top-row">
+      <div class="timer-pill">
+        <span class="timer-label" style="margin-right:4px;">Time Left:</span>
+        <span class="timer-txt" id="tmr">30:00</span>
+      </div>
+      <span class="q-badge">Total Questions: ${Q.length}</span>
+    </div>
+  </div>`;
+
+  Q.forEach((q, qIdx) => {
+    const isD = done[qIdx];
+    const ua = ans[qIdx];
+    
+    let optsHtml = q.o.map((o, oIdx) => {
+      let cls = 'opt';
+      if (isD) {
+        if (oIdx === q.a) cls += ' correct-ans';
+        else if (oIdx === ua) cls += ' wrong-ans';
+        else cls += ' neutral-locked';
+      } else {
+        cls += ' unanswered';
+      }
+      return `<div class="${cls}" onclick="pick(${qIdx}, ${oIdx})"><span class="opt-key ${KEYS[oIdx]}">${KEYS[oIdx]}</span><span class="opt-txt">${o}</span></div>`;
+    }).join('');
+
+    let expHtml = '';
+    if (isD) {
+      const ok = ua === q.a;
+      expHtml = `<div class="exp-box ${ok?'correct':'wrong'}"><div class="exp-label">${ok?'✓ Correct!':'✗ Incorrect'}</div>${q.e}</div>`;
+    }
+
+    html += `
+    <div class="q-container" id="q-box-${qIdx}">
+      <div class="q-num">Question ${qIdx + 1}</div>
+      <div class="q-text">${q.q.replace(/\n/g, '<br>')}</div>
+      <div class="opts">${optsHtml}</div>
+      ${expHtml}
+    </div>`;
+  });
+
+  html += `
+  <div class="action-container">
+    <button class="btn-submit-all" onclick="showResults()">Submit Test</button>
+  </div>`;
+
+  document.getElementById('app').innerHTML = html;
+  updTimerDisplay();
+}
+
+function pick(qIdx, oIdx){
+  if(done[qIdx]) return;
+  ans[qIdx] = oIdx;
+  done[qIdx] = true;
+  
+  const q = Q[qIdx];
+  const ua = ans[qIdx];
+  const ok = ua === q.a;
+
+  if (ok) {
+    sndCorrect.currentTime = 0;
+    sndCorrect.play().catch(e => console.log("Audio play blocked"));
+  }
+  
+  const qBox = document.getElementById(`q-box-${qIdx}`);
+  if(qBox) {
+    let optsHtml = q.o.map((o, idx) => {
+      let cls = 'opt';
+      if (idx === q.a) cls += ' correct-ans';
+      else if (idx === ua) cls += ' wrong-ans';
+      else cls += ' neutral-locked';
+      return `<div class="${cls}" onclick="pick(${qIdx}, ${idx})"><span class="opt-key ${KEYS[idx]}">${KEYS[idx]}</span><span class="opt-txt">${o}</span></div>`;
+    }).join('');
+
+    let expHtml = `<div class="exp-box ${ok?'correct':'wrong'}"><div class="exp-label">${ok?'✓ Correct!':'✗ Incorrect'}</div>${q.e}</div>`;
+
+    qBox.innerHTML = `
+      <div class="q-num">Question ${qIdx + 1}</div>
+      <div class="q-text">${q.q.replace(/\n/g, '<br>')}</div>
+      <div class="opts">${optsHtml}</div>
+      ${expHtml}
+    `;
+  }
+}
+
+function showResults(){
+  if(globalTmr) {
+    clearInterval(globalTmr);
+    globalTmr = null;
+  }
+  let c=0,w=0,s=0;
+  ans.forEach((a,i)=>{if(a===-1)s++;else if(a===Q[i].a)c++;else w++;});
+  const pct=Math.round((c/Q.length)*100);
+  const grade=pct>=80?'Excellent!':pct>=60?'Good effort!':pct>=40?'Keep practising':'Keep going!';
+  
+  let rev=Q.map((q,i)=>{
+    const ua=ans[i], isC=ua===q.a, isS=ua===-1;
+    const rc=isS?'rs':isC?'rc':'rw';
+    const bl=isS?'Skipped':isC?'Correct':'Wrong';
+    return `<div class="r-card ${rc}">
+      <div class="r-head"><span class="r-badge ${rc}">${bl}</span><span class="r-qnum">Q${i+1}</span></div>
+      <div class="r-qtxt">${q.q.replace(/\n/g, '<br>')}</div>
+      ${!isS&&!isC?`<div class="r-ans wrong">Your answer: ${KEYS[ua]}. ${q.o[ua]}</div>`:''}
+      <div class="r-ans correct">Correct: ${KEYS[q.a]}. ${q.o[q.a]}</div>
+      <div class="r-exp">${q.e}</div>
+    </div>`;
+  }).join('');
+  
+  document.getElementById('app').innerHTML=`
+  <div class="result-top">
+    <div class="score-ring"><span class="score-big">${c}</span><span class="score-sub">/ ${Q.length}</span></div>
+    <div class="result-label">${grade}</div>
+    <div class="result-sub">${pct}% · ${c} correct out of ${Q.length}</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-c green"><div class="stat-n">${c}</div><div class="stat-l">Correct</div></div>
+    <div class="stat-c red"><div class="stat-n">${w}</div><div class="stat-l">Wrong</div></div>
+    <div class="stat-c gray"><div class="stat-n">${s}</div><div class="stat-l">Skipped</div></div>
+  </div>
+  <div class="review-title">Full review</div>
+  ${rev}
+  <button class="restart-btn" onclick="restartQuiz()">Restart quiz</button>`;
+  window.scrollTo(0,0);
+}
+
+function restartQuiz(){
+  ans=new Array(Q.length).fill(-1);
+  done=new Array(Q.length).fill(false);
+  globalTimeLeft = 1800;
+  startGlobalTimer();
+  renderAllQuestions();
+  window.scrollTo(0,0);
+}
+
+startGlobalTimer();
+renderAllQuestions();
+</script>
+
+</body>
+</html>
+
+```
